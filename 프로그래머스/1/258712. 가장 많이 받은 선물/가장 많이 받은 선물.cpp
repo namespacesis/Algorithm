@@ -1,47 +1,42 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <sstream>
+#include <algorithm>
 
 using namespace std;
 
 int solution(vector<string> friends, vector<string> gifts) {
+    int answer = 0;
+    map<string, int> giftIndex;
+    map<string, int> giftCount;
+    int n = friends.size();
+    vector<vector<int>> giftTable(n, vector<int>(n, 0));
+    vector<int> nextMonth(n, 0);
 
-    vector<int> point(friends.size(), 0);
-    vector<vector<int>> count(friends.size(), vector<int>(friends.size(), 0));
-    map<string, int> m;
-
-    for(int i=0;i< friends.size(); i++) 
-        m.insert({friends[i], i});
-
-    for(int i = 0; i < gifts.size(); i++) {
-        string from, to;
-        stringstream parse(gifts[i]);
-        parse >> from >> to;
-
-        int fromIdx = m[from], toIdx = m[to];
-        count[fromIdx][toIdx]++;
-
-        point[fromIdx]++;
-        point[toIdx]--;
+    // 이름과 인덱스를 매핑
+    for (int i = 0; i < n; i++) {
+        giftIndex[friends[i]] = i;
     }
 
-    int ans = 0;
+    // 주고 받은 기록으로 선물 지수 계산
+    for (string gift : gifts) {
+        int give = giftIndex[gift.substr(0, gift.find(' '))];
+        int take = giftIndex[gift.substr(gift.find(' ') + 1)];
+        giftTable[give][take]++;
+        giftCount[friends[give]]++;
+        giftCount[friends[take]]--;
+    }
 
-    for(int i = 0; i < friends.size(); i++) {
-        int res = 0;
-
-        for(int j = 0; j < friends.size(); j++) {
-            if(i == j || count[i][j] < count[j][i]) continue;
-
-            if(count[i][j] > count[j][i]) res++;
-            else {
-                if(point[i] > point[j]) res++;
+    // 다음 달에 각 친구가 받을 선물수 계산
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i == j) continue;
+            if (giftTable[i][j] > giftTable[j][i] || (giftTable[i][j] == giftTable[j][i] && giftCount[friends[i]] > giftCount[friends[j]])) {
+                nextMonth[i]++;
             }
         }
-
-        ans = max(res, ans);
     }
 
-    return ans;
+    answer = *max_element(nextMonth.begin(), nextMonth.end());
+    return answer;
 }
