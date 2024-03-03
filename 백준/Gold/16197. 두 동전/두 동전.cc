@@ -18,15 +18,9 @@ bool visited[20][20][20][20];
 int dx[4] = { 1, -1, 0, 0 };
 int dy[4] = { 0, 0, 1, -1 };
 
-bool check(int x, int y) {
-    if (0 <= x && x < N && 0 <= y && y < M) return true;
-    return false;
-}
-
 int bfs() {
     queue<Coin> q;
     q.push({ r1, c1, r2, c2, 0 });
-    visited[r1][c1][r2][c2] = true;
 
     while (!q.empty()) {
         Coin cur = q.front();
@@ -34,26 +28,27 @@ int bfs() {
 
         if (cur.cnt > 10) return -1;
 
+        int drop = 0;
+        if (cur.x1 < 0 || cur.y1 < 0 || cur.x1 >= N || cur.y1 >= M) drop++;
+        if (cur.x2 < 0 || cur.y2 < 0 || cur.x2 >= N || cur.y2 >= M) drop++;
+        if (drop > 1) continue;
+        if (drop == 1) {
+            return cur.cnt;
+        }
+
+        if (visited[cur.x1][cur.y1][cur.x2][cur.y2]) continue;
+        visited[cur.x1][cur.y1][cur.x2][cur.y2] = true;
+
         for (int i = 0; i < 4; i++) {
             int nx1 = cur.x1 + dx[i];
             int ny1 = cur.y1 + dy[i];
             int nx2 = cur.x2 + dx[i];
             int ny2 = cur.y2 + dy[i];
 
-            if (!check(nx1, ny1) && check(nx2, ny2) || check(nx1, ny1) && !check(nx2, ny2)) {
-                if (cur.cnt + 1 > 10) return -1;
-                return cur.cnt + 1;
-            }
-
-            if (!check(nx1, ny1) && !check(nx2, ny2)) continue;
-
-            if (visited[nx1][ny1][nx2][ny2]) continue;
-
             if (map[nx1][ny1] == '#') nx1 = cur.x1, ny1 = cur.y1;
             if (map[nx2][ny2] == '#') nx2 = cur.x2, ny2 = cur.y2;
-    
+            
             q.push({ nx1, ny1, nx2, ny2, cur.cnt + 1 });
-            visited[nx1][ny1][nx2][ny2] = true;
         }
     }
 
