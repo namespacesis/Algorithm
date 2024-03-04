@@ -7,7 +7,6 @@ const int MAX_STATIONS = 1000001;
 
 struct Node {
     int prev, next;
-    bool exists;
 } stations[MAX_STATIONS];
 
 int main() {
@@ -29,7 +28,6 @@ int main() {
         int prev = input[(i - 1 + N) % N];
         stations[current].next = next;
         stations[current].prev = prev;
-        stations[current].exists = true;
     }
 
     while (M--) {
@@ -42,23 +40,21 @@ int main() {
             int next = (command == "BN") ? stations[a].next : a;
             int prev = (command == "BN") ? a : stations[a].prev;
 
-            cout << (command == "BN" ? next : prev) << '\n';
+            cout << (command == "BN" ? stations[a].next : stations[a].prev) << "\n";
 
             stations[b].next = next;
             stations[b].prev = prev;
             stations[next].prev = b;
             stations[prev].next = b;
-            stations[b].exists = true;
         }
         else {
             cin >> a;
             int target = (command == "CN") ? stations[a].next : stations[a].prev;
 
-            cout << target << '\n';
+            cout << target << "\n";
 
             stations[stations[target].prev].next = stations[target].next;
             stations[stations[target].next].prev = stations[target].prev;
-            stations[target].exists = false;
         }
     }
 
