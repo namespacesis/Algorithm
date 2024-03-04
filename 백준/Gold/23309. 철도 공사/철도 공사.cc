@@ -1,97 +1,65 @@
 #include <iostream>
-#include <unordered_map>
+#include <vector>
+
 using namespace std;
 
-struct Station {
-    int id;
-    Station* next;
-    Station* prev;
-    Station(int id) : id(id), next(nullptr), prev(nullptr) {}
-};
+const int MAX_STATIONS = 1000001;
 
-int N, M;
+struct Node {
+    int prev, next;
+    bool exists;
+} stations[MAX_STATIONS];
 
 int main() {
-    ios::sync_with_stdio(false);
+    ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
 
+    int N, M;
     cin >> N >> M;
 
-    unordered_map<int, Station*> stationMap;
-
-    int firstStationID;
-    cin >> firstStationID;
-    Station* firstStation = new Station(firstStationID);
-    stationMap[firstStationID] = firstStation;
-    Station* lastStation = firstStation;
-
-    for (int i = 1; i < N; ++i) {
-        int stationID;
-        cin >> stationID;
-        Station* newStation = new Station(stationID);
-        lastStation->next = newStation;
-        newStation->prev = lastStation;
-        stationMap[stationID] = newStation;
-        lastStation = newStation;
+    vector<int> input(N);
+    for (int i = 0; i < N; ++i) {
+        cin >> input[i];
     }
 
-    firstStation->prev = lastStation;
-    lastStation->next = firstStation;
-
-    for (int i = 0; i < M; ++i) {
-        char operation;
-        cin >> operation;
-        if (operation == 'B') {
-            char direction;
-            int i, j;
-            cin >> direction >> i >> j;
-            Station* station = stationMap[i];
-            Station* newStation = new Station(j);
-
-            if (direction == 'N') {
-                cout << station->next->id << '\n';
-                newStation->next = station->next;
-                station->next->prev = newStation;
-                station->next = newStation;
-                newStation->prev = station;
-            }
-            else {
-                cout << station->prev->id << '\n';
-                newStation->prev = station->prev;
-                station->prev->next = newStation;
-                station->prev = newStation;
-                newStation->next = station;
-            }
-            stationMap[j] = newStation;
-        }
-        else if (operation == 'C') {
-            char direction;
-            cin >> direction;
-            int i;
-            cin >> i;
-            Station* station = stationMap[i];
-            Station* targetStation;
-
-            if (direction == 'N') {
-                targetStation = station->next;
-                cout << targetStation->id << '\n';
-                station->next = targetStation->next;
-                targetStation->next->prev = station;
-            }
-            else {
-                targetStation = station->prev;
-                cout << targetStation->id << '\n';
-                station->prev = targetStation->prev;
-                targetStation->prev->next = station;
-            }
-            stationMap.erase(targetStation->id);
-            delete targetStation;
-        }
+    for (int i = 0; i < N; ++i) {
+        int current = input[i];
+        int next = input[(i + 1) % N];
+        int prev = input[(i - 1 + N) % N];
+        stations[current].next = next;
+        stations[current].prev = prev;
+        stations[current].exists = true;
     }
 
-    for (auto& p : stationMap) {
-        delete p.second;
+    while (M--) {
+        string command;
+        cin >> command;
+        int a, b;
+
+        if (command == "BN" || command == "BP") {
+            cin >> a >> b;
+            int next = (command == "BN") ? stations[a].next : a;
+            int prev = (command == "BN") ? a : stations[a].prev;
+
+            cout << (command == "BN" ? next : prev) << '\n';
+
+            stations[b].next = next;
+            stations[b].prev = prev;
+            stations[next].prev = b;
+            stations[prev].next = b;
+            stations[b].exists = true;
+        }
+        else {
+            cin >> a;
+            int target = (command == "CN") ? stations[a].next : stations[a].prev;
+
+            cout << target << '\n';
+
+            stations[stations[target].prev].next = stations[target].next;
+            stations[stations[target].next].prev = stations[target].prev;
+            stations[target].exists = false;
+        }
     }
 
     return 0;
