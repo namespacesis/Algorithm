@@ -4,33 +4,37 @@
 #include <unordered_map>
 #include <string>
 
+using namespace std;
+
 struct Node {
     int start;
     int end;
 };
 
-uint32_t id(std::string_view sv) {
+uint32_t id(string_view sv) {
     return sv[0] | (sv[1] << 8) | (sv[2] << 16) | (sv[3] << 24);
 }
 
 int main() {
-    std::cin.tie(nullptr)->sync_with_stdio(false);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
 
     int n;
-    std::cin >> n;
+    cin >> n;
 
-    std::list<Node> memory;
-    std::unordered_map<uint32_t, std::list<Node>::iterator> table;
+    list<Node> memory;
+    unordered_map<uint32_t, list<Node>::iterator> table;
 
     memory.push_back({ 1, 1 });
-    memory.push_back({ 100'001, 100'001 });
+    memory.push_back({ 100001, 100001 });
 
     while (n--) {
-        std::string command;
-        std::cin >> command;
+        string command;
+        cin >> command;
 
         if (command[0] == 'f') { // "free" command
-            auto var = id(std::string_view(command).substr(5, 4));
+            auto var = id(string_view(command).substr(5, 4));
 
             auto it = table.find(var);
             if (it != table.end()) {
@@ -39,28 +43,28 @@ int main() {
             }
         }
         else if (command[0] == 'p') { // "print" command
-            auto var = id(std::string_view(command).substr(6, 4));
+            auto var = id(string_view(command).substr(6, 4));
 
             auto it = table.find(var);
             if (it != table.end()) {
-                std::cout << it->second->start << '\n';
+                cout << it->second->start << '\n';
             }
             else {
-                std::cout << "0\n";
+                cout << "0\n";
             }
         }
         else { // "malloc" command
-            auto var = id(std::string_view(command).substr(0, 4));
-            int size = std::stoi(command.substr(12));
+            auto var = id(string_view(command).substr(0, 4));
+            int size = stoi(command.substr(12));
 
             auto it = table.find(var);
             if (it != table.end()) {
                 table.erase(it);
             }
 
-            for (auto it = memory.begin(); std::next(it) != memory.end(); ++it) {
-                if (size <= std::next(it)->start - it->end) {
-                    auto inserted = memory.insert(std::next(it), { it->end, it->end + size });
+            for (auto it = memory.begin(); next(it) != memory.end(); ++it) {
+                if (size <= next(it)->start - it->end) {
+                    auto inserted = memory.insert(next(it), { it->end, it->end + size });
                     table[var] = inserted;
                     break;
                 }
