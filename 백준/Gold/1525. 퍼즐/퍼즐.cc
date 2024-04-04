@@ -1,6 +1,6 @@
 #include <iostream>
 #include <queue>
-#include <set>
+#include <unordered_set>
 #include <string>
 
 using namespace std;
@@ -16,7 +16,7 @@ int dy[4] = { 0, 0, 1, -1 };
 int bfs(string state) {
 	int res = -1;
 
-	set<string> visited;
+	unordered_set<string> visited;
 	queue<Node> q;
 	
 	visited.insert(state);
