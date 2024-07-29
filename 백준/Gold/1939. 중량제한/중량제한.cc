@@ -14,10 +14,9 @@ struct Edge {
     bool operator<(const Edge& other) const {
         return weight > other.weight;
     }
-};
+} arr[100001];
 
 int N, M;
-vector<Edge> graph;
 int F1, F2;
 int parent[100001];
 
@@ -47,21 +46,23 @@ int main() {
         int S, E, W;
         cin >> S >> E >> W;
 
-        graph.push_back({ S, E, W });
+        arr[i].from = S;
+        arr[i].to = E;
+        arr[i].weight = W;
     }
 
-    sort(graph.begin(), graph.end());
+    sort(arr, arr + M);
 
     cin >> F1 >> F2;
 
-    for (int i = 0; i < graph.size(); i++) {
-        int a = graph[i].from;
-        int b = graph[i].to;
+    for (int i = 0; i < M; i++) {
+        int a = arr[i].from;
+        int b = arr[i].to;
 
         unionParent(a, b);
 
         if (getParent(F1) == getParent(F2)) {
-			cout << graph[i].weight << "\n";
+			cout << arr[i].weight << "\n";
 			break;
 		}
     }
