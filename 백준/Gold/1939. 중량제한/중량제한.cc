@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 #include <algorithm>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
@@ -29,8 +28,7 @@ void unionParent(int a, int b) {
     a = getParent(a);
     b = getParent(b);
 
-    if (a < b) parent[b] = a;
-	else parent[a] = b;
+    parent[a] = b;
 }
 
 int main() {
