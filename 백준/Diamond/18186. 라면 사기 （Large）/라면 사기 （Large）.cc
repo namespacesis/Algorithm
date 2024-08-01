@@ -2,14 +2,14 @@
 #include <stdio.h>
 #define min(x, y) ((x) < (y) ? (x) : (y))
 
-long long N;
-int B, C;
-long long arr[1000000];
-long long arr2[1000000];
-long long arr3[1000000];
+int N;
+long long B, C;
+int arr[1000000];
+int arr2[1000000];
+int arr3[1000000];
 
 int main(void) {
-    scanf("%d %d %d", &N, &B, &C);
+    scanf("%d %lld %lld", &N, &B, &C);
 
     for (int i = 0; i < N; i++) {
         scanf("%d", &arr[i]);
