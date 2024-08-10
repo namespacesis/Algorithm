@@ -7,7 +7,7 @@ char str[100000];
 int main(void) {
 	scanf("%d", &N);
 
-	scanf("%s", &str);
+	scanf("%s", str);
 
 	int cnt = 1;
 
