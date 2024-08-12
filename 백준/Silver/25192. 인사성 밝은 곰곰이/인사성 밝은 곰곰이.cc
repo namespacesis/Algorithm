@@ -1,12 +1,12 @@
 #include <iostream>
-#include <unordered_set>
+#include <set>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
 
 using namespace std;
 
 int N;
-unordered_set<string> us;
+set<string> s;
 
 int main() {
 	FastIO;
@@ -20,15 +20,15 @@ int main() {
 		cin >> str;
 
 		if (str == "ENTER") {
-			res += us.size();
-			us.clear();
+			res += s.size();
+			s.clear();
 		}
 		else {
-			us.insert(str);
+			s.insert(str);
 		}
 	}
 
-	res += us.size();
+	res += s.size();
 
 	cout << res << "\n";
 
