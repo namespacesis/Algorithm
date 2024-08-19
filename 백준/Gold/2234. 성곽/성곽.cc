@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <queue>
-#include <cstring>
+#include <vector>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
 
@@ -9,14 +9,16 @@ using namespace std;
 
 int N, M;
 int arr[50][50];
-bool visited[50][50];
+int visited[50][50];
 int dx[4] = { 0, -1, 0, 1 };
 int dy[4] = { -1, 0, 1, 0 };
+int currentRoomId = 0;
+vector<int> roomSizes;
 
 int bfs(int x, int y) {
     queue<pair<int, int>> q;
     q.push({ x, y });
-    visited[x][y] = true;
+    visited[x][y] = currentRoomId;
 
     int cnt = 0;
 
@@ -36,7 +38,7 @@ int bfs(int x, int y) {
 
                 if (0 <= nx && nx < N && 0 <= ny && ny < M) {
                     if (!visited[nx][ny]) {
-                        visited[nx][ny] = true;
+                        visited[nx][ny] = currentRoomId;
                         q.push({ nx, ny });
                     }
                 }
@@ -64,7 +66,10 @@ int main() {
         for (int j = 0; j < M; j++) {
             if (!visited[i][j]) {
                 res1++;
-                res2 = max(res2, bfs(i, j));
+                currentRoomId++;
+                int roomSize = bfs(i, j);
+                res2 = max(res2, roomSize);
+                roomSizes.push_back(roomSize);
             }
         }
     }
@@ -72,13 +77,10 @@ int main() {
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < M; j++) {
             for (int k = 0; k < 4; k++) {
-                int check = arr[i][j] & (1 << k);
-
-                if (check) {
-                    arr[i][j] -= (1 << k);
-                    memset(visited, false, sizeof(visited));
-                    res3 = max(res3, bfs(i, j));
-                    arr[i][j] += (1 << k);
+                int nx = i + dx[k];
+                int ny = j + dy[k];
+                if (0 <= nx && nx < N && 0 <= ny && ny < M && visited[i][j] != visited[nx][ny]) {
+                    res3 = max(res3, roomSizes[visited[i][j] - 1] + roomSizes[visited[nx][ny] - 1]);
                 }
             }
         }
