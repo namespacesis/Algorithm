@@ -1,7 +1,6 @@
 #include <iostream>
 #include <queue>
-#include <unordered_map>
-#include <string>
+#include <unordered_set>
 #include <algorithm>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
@@ -9,53 +8,64 @@
 using namespace std;
 
 int N;
-string arr;
-unordered_map<string, int> um;
+int target;
 
-bool check(const string& s) {
+int encode(int sizes[], int dirs[]) {
+    int mask = 0;
     for (int i = 0; i < N; i++) {
-        if (s[i] != '1' + i || s[N + i] != '+') {
-            return false;
-        }
+        mask <<= 4;
+        mask |= (sizes[i] << 1) | dirs[i];
     }
-    return true;
+    return mask;
 }
 
-string rev(const string& s, int idx) {
-    string res = s;
-
-    reverse(res.begin(), res.begin() + idx + 1);
-    reverse(res.begin() + N, res.begin() + N + idx + 1);
-
-    for (int i = N; i <= N + idx; i++) {
-        res[i] = (res[i] == '+') ? '-' : '+';
+void decode(int mask, int sizes[], int dirs[]) {
+    for (int i = N - 1; i >= 0; i--) {
+        dirs[i] = mask & 1;
+        mask >>= 1;
+        sizes[i] = (mask & 7);
+        mask >>= 3;
     }
-
-    return res;
 }
 
-int bfs() {
-    queue<string> q;
-    q.push(arr);
-    um[arr] = 0;
+bool is_target(int mask) {
+    return mask == target;
+}
+
+int rev(int mask, int idx) {
+    int sizes[6], dirs[6];
+    decode(mask, sizes, dirs);
+
+    reverse(sizes, sizes + idx + 1);
+    reverse(dirs, dirs + idx + 1);
+    for (int i = 0; i <= idx; i++) {
+        dirs[i] ^= 1;
+    }
+
+    return encode(sizes, dirs);
+}
+
+int bfs(int start) {
+    unordered_set<int> visited;
+    queue<pair<int, int>> q;
+    q.push({ start, 0 });
+    visited.insert(start);
 
     while (!q.empty()) {
-        string cur = q.front();
+        auto [cur, steps] = q.front();
         q.pop();
 
-        if (check(cur)) {
-            return um[cur];
+        if (is_target(cur)) {
+            return steps;
         }
 
         for (int i = 0; i < N; i++) {
-            string next = rev(cur, i);
-
-            if (um.find(next) != um.end()) {
+            int next = rev(cur, i);
+            if (visited.find(next) != visited.end()) {
                 continue;
             }
-
-            um[next] = um[cur] + 1;
-            q.push(next);
+            visited.insert(next);
+            q.push({ next, steps + 1 });
         }
     }
 }
@@ -64,17 +74,23 @@ int main() {
     FastIO;
 
     cin >> N;
-    arr.resize(2 * N);
-
+    int sizes[6], dirs[6];
     for (int i = 0; i < N; i++) {
         int size;
         char dir;
         cin >> size >> dir;
-        arr[i] = '0' + size;
-        arr[N + i] = dir;
+        sizes[i] = size;
+        dirs[i] = (dir == '+') ? 0 : 1;
     }
 
-    int res = bfs();
+    int target_sizes[6], target_dirs[6] = { 0 };
+    for (int i = 0; i < N; i++) {
+        target_sizes[i] = i + 1;
+    }
+    target = encode(target_sizes, target_dirs);
+
+    int start = encode(sizes, dirs);
+    int res = bfs(start);
 
     cout << res << "\n";
 
