@@ -1,58 +1,60 @@
 #include <iostream>
 #include <queue>
-#include <vector>
-#include <map>
+#include <unordered_map>
+#include <string>
 #include <algorithm>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
 
 using namespace std;
-using ii = pair<int, int>;
 
 int N;
-vector<ii> arr(6);
-map<vector<ii>, int> visited;
+string arr;
+unordered_map<string, int> um;
 
-bool check(const vector<ii>& v) {
+bool check(const string& s) {
     for (int i = 0; i < N; i++) {
-        if (i + 1 != v[i].first || 1 != v[i].second) {
+        if (s[i] != '1' + i || s[N + i] != '+') {
             return false;
         }
     }
     return true;
 }
 
-vector<ii> rev(vector<ii> v, int idx) {
-    reverse(v.begin(), v.begin() + idx + 1);
+string rev(const string& s, int idx) {
+    string res = s;
 
-    for (int i = 0; i <= idx; i++) {
-        v[i].second *= -1;
+    reverse(res.begin(), res.begin() + idx + 1);
+    reverse(res.begin() + N, res.begin() + N + idx + 1);
+
+    for (int i = N; i <= N + idx; i++) {
+        res[i] = (res[i] == '+') ? '-' : '+';
     }
 
-    return v;
+    return res;
 }
 
 int bfs() {
-    queue<vector<ii>> q;
+    queue<string> q;
     q.push(arr);
-    visited[arr] = 0;
+    um[arr] = 0;
 
     while (!q.empty()) {
-        vector<ii> cur = q.front();
+        string cur = q.front();
         q.pop();
 
         if (check(cur)) {
-            return visited[cur];
+            return um[cur];
         }
 
         for (int i = 0; i < N; i++) {
-            vector<ii> next = rev(cur, i);
+            string next = rev(cur, i);
 
-            if (visited.find(next) != visited.end()) {
+            if (um.find(next) != um.end()) {
                 continue;
             }
 
-            visited[next] = visited[cur] + 1;
+            um[next] = um[cur] + 1;
             q.push(next);
         }
     }
@@ -62,18 +64,14 @@ int main() {
     FastIO;
 
     cin >> N;
+    arr.resize(2 * N);
 
     for (int i = 0; i < N; i++) {
-        cin >> arr[i].first;
-
+        int size;
         char dir;
-        cin >> dir;
-        if (dir == '+') {
-            arr[i].second = 1;
-        }
-        else if (dir == '-') {
-            arr[i].second = -1;
-        }
+        cin >> size >> dir;
+        arr[i] = '0' + size;
+        arr[N + i] = dir;
     }
 
     int res = bfs();
