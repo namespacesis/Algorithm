@@ -47,11 +47,11 @@ int main() {
             visited[i][C - 1] = arr[i][C - 1];
         }
 
-        for (int j = 0; j < C; j++) {
+        for (int j = 1; j < C - 1; j++) {
             pq.push({ 0, j, arr[0][j] });
-			visited[0][j] = arr[0][j];
-			pq.push({ R - 1, j, arr[R - 1][j] });
-			visited[R - 1][j] = arr[R - 1][j];
+            visited[0][j] = arr[0][j];
+            pq.push({ R - 1, j, arr[R - 1][j] });
+            visited[R - 1][j] = arr[R - 1][j];
         }
 
         while (!pq.empty()) {
@@ -67,13 +67,10 @@ int main() {
                 int ny = cur.y + dy[i];
 
                 if (0 <= nx && nx < R && 0 <= ny && ny < C) {
-                    if (arr[nx][ny] && visited[nx][ny] > cur.cnt + 1) {
-                        visited[nx][ny] = cur.cnt + 1;
-                        pq.push({ nx, ny, cur.cnt + 1 });
-                    }
-                    else if (!arr[nx][ny] && visited[nx][ny] > cur.cnt) {
-                        visited[nx][ny] = cur.cnt;
-                        pq.push({ nx, ny, cur.cnt });
+                    int ncnt = cur.cnt + arr[nx][ny];
+                    if (ncnt < visited[nx][ny]) {
+                        visited[nx][ny] = ncnt;
+                        pq.push({ nx, ny, ncnt });
                     }
                 }
             }
