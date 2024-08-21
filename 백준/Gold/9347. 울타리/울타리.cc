@@ -1,5 +1,5 @@
 #include <iostream>
-#include <queue>
+#include <deque>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
 #define INF 1e9
@@ -7,13 +7,7 @@
 using namespace std;
 
 struct Node {
-    int x;
-    int y;
-    int cnt;
-
-    bool operator<(const Node& t) const {
-        return cnt > t.cnt;
-    }
+    int x, y, cnt;
 };
 
 int T;
@@ -38,29 +32,25 @@ int main() {
             }
         }
 
-        priority_queue<Node> pq;
+        deque<Node> dq;
 
         for (int i = 0; i < R; i++) {
-            pq.push({ i, 0, arr[i][0] });
+            dq.push_front({ i, 0, arr[i][0] });
             visited[i][0] = arr[i][0];
-            pq.push({ i, C - 1, arr[i][C - 1] });
+            dq.push_front({ i, C - 1, arr[i][C - 1] });
             visited[i][C - 1] = arr[i][C - 1];
         }
 
         for (int j = 1; j < C - 1; j++) {
-            pq.push({ 0, j, arr[0][j] });
+            dq.push_front({ 0, j, arr[0][j] });
             visited[0][j] = arr[0][j];
-            pq.push({ R - 1, j, arr[R - 1][j] });
+            dq.push_front({ R - 1, j, arr[R - 1][j] });
             visited[R - 1][j] = arr[R - 1][j];
         }
 
-        while (!pq.empty()) {
-            Node cur = pq.top();
-            pq.pop();
-
-            if (cur.cnt > visited[cur.x][cur.y]) {
-                continue;
-            }
+        while (!dq.empty()) {
+            Node cur = dq.front();
+            dq.pop_front();
 
             for (int i = 0; i < 4; i++) {
                 int nx = cur.x + dx[i];
@@ -70,7 +60,12 @@ int main() {
                     int ncnt = cur.cnt + arr[nx][ny];
                     if (ncnt < visited[nx][ny]) {
                         visited[nx][ny] = ncnt;
-                        pq.push({ nx, ny, ncnt });
+                        if (arr[nx][ny] == 0) {
+                            dq.push_front({ nx, ny, ncnt });
+                        }
+                        else {
+                            dq.push_back({ nx, ny, ncnt });
+                        }
                     }
                 }
             }
@@ -87,8 +82,8 @@ int main() {
                         res2 = 1;
                     }
                     else if (res1 == visited[i][j]) {
-						res2++;
-					}
+                        res2++;
+                    }
                 }
             }
         }
