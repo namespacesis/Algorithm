@@ -22,79 +22,71 @@ Point moveDir[4][9] = {
     {-1, -1, 10}, {1, -1, 10},
     {0, -2, 5}},
     {{-1, -1, 1}, {-1, 1, 1},
-	{0, -2, 2}, {0, 2, 2},
-	{0, -1, 7}, {0, 1, 7},
-	{1, -1, 10}, {1, 1, 10},
-	{2, 0, 5}},
-	{{-1, -1, 1}, {1, -1, 1},
-	{-2, 0, 2}, {2, 0, 2},
-	{-1, 0, 7}, {1, 0, 7},
-	{-1, 1, 10}, {1, 1, 10},
-	{0, 2, 5}},
-	{{1, -1, 1}, {1, 1, 1},
-	{0, -2, 2}, {0, 2, 2},
-	{0, -1, 7}, {0, 1, 7},
-	{-1, -1, 10}, {-1, 1, 10},
-	{-2, 0, 5}}
+    {0, -2, 2}, {0, 2, 2},
+    {0, -1, 7}, {0, 1, 7},
+    {1, -1, 10}, {1, 1, 10},
+    {2, 0, 5}},
+    {{-1, -1, 1}, {1, -1, 1},
+    {-2, 0, 2}, {2, 0, 2},
+    {-1, 0, 7}, {1, 0, 7},
+    {-1, 1, 10}, {1, 1, 10},
+    {0, 2, 5}},
+    {{1, -1, 1}, {1, 1, 1},
+    {0, -2, 2}, {0, 2, 2},
+    {0, -1, 7}, {0, 1, 7},
+    {-1, -1, 10}, {-1, 1, 10},
+    {-2, 0, 5}}
 };
 
 void solve() {
     int dist = 1;
-    int movcnt = 0;
-    int cnt = 0;
     int dir = 0;
     int x = N / 2;
     int y = N / 2;
 
     while (true) {
-        if (x == 0 && y == 0) {
-            break;
-        }
+        for (int step = 0; step < 2; step++) {
+            for (int i = 0; i < dist; i++) {
+                int nx = x + dx[dir];
+                int ny = y + dy[dir];
+                x = nx;
+                y = ny;
 
-        int nx = x + dx[dir];
-        int ny = y + dy[dir];
-        x = nx;
-        y = ny;
+                int sand = arr[nx][ny];
+                arr[nx][ny] = 0;
 
-        int sand = arr[nx][ny];
-        arr[nx][ny] = 0;
+                int temp = sand;
 
-        int temp = sand;
+                for (int j = 0; j < 9; j++) {
+                    int mx = nx + moveDir[dir][j].x;
+                    int my = ny + moveDir[dir][j].y;
+                    int mSand = sand * moveDir[dir][j].percent / 100;
 
-        for (int i = 0; i < 9; i++) {
-            int mx = nx + moveDir[dir][i].x;
-            int my = ny + moveDir[dir][i].y;
-            int mSand = sand * moveDir[dir][i].percent / 100;
+                    if (0 <= mx && mx < N && 0 <= my && my < N) {
+                        arr[mx][my] += mSand;
+                    }
+                    else {
+                        res += mSand;
+                    }
 
-            if (0 <= mx && mx < N && 0 <= my && my < N) {
-                arr[mx][my] += mSand;
+                    temp -= mSand;
+                }
+
+                int ax = nx + dx[dir];
+                int ay = ny + dy[dir];
+
+                if (0 <= ax && ax < N && 0 <= ay && ay < N) {
+                    arr[ax][ay] += temp;
+                }
+                else {
+                    res += temp;
+                }
+
+                if (x == 0 && y == 0) return;
             }
-            else {
-                res += mSand;
-            }
-
-            temp -= mSand;
-        }
-
-        if (0 <= nx + dx[dir] && nx + dx[dir] < N && 0 <= ny + dy[dir] && ny + dy[dir] < N) {
-            arr[nx + dx[dir]][ny + dy[dir]] += temp;
-        }
-        else {
-            res += temp;
-        }
-
-        cnt++;
-        movcnt++;
-        
-        if (movcnt == dist) {
             dir = (dir + 1) % 4;
-            movcnt = 0;
         }
-
-        if (cnt == dist * 2 && dist != N - 1) {
-            cnt = 0;
-            dist++;
-        }
+        dist++;
     }
 }
 
