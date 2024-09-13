@@ -48,7 +48,6 @@ void simulate() {
 		}
 
 		if (cnt >= K) {
-			cout << res << '\n';
 			return;
 		}
 	}
@@ -64,6 +63,8 @@ int main() {
     }
 
     simulate();
+
+	cout << res << "\n";
 
     return 0;
 }
