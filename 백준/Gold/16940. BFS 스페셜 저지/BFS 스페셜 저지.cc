@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <set>
+#include <unordered_set>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
 
@@ -43,7 +43,7 @@ int main() {
         int cur = q.front();
         q.pop();
 
-        set<int> nextNodes;
+        unordered_set<int> nextNodes;
         for (int next : graph[cur]) {
             if (!visited[next]) {
                 nextNodes.insert(next);
