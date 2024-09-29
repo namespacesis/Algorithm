@@ -6,9 +6,10 @@
 using namespace std;
 
 const int MAXN = 50001;
+const int LOG = 17;
 int N, M;
 vector<int> adj[MAXN];
-int parent[MAXN];
+int parent[MAXN][LOG];
 int depth[MAXN];
 bool check[MAXN];
 
@@ -18,23 +19,38 @@ void dfs(int x, int d) {
 
     for (int y : adj[x]) {
         if (check[y]) continue;
-        parent[y] = x;
+        parent[y][0] = x;
         dfs(y, d + 1);
     }
 }
 
+void build() {
+    for (int i = 1; i < LOG; i++) {
+		for (int j = 1; j <= N; j++) {
+			parent[j][i] = parent[parent[j][i - 1]][i - 1];
+		}
+	}
+}
+
 int lca(int u, int v) {
-    while (depth[u] != depth[v]) {
-        if (depth[u] > depth[v]) u = parent[u];
-        else v = parent[v];
+    if (depth[u] > depth[v]) swap(u, v);
+
+    for (int i = LOG - 1; i >= 0; i--) {
+        if (depth[v] - depth[u] >= (1 << i)) {
+            v = parent[v][i];
+        }
     }
 
-    while (u != v) {
-        u = parent[u];
-        v = parent[v];
+    if (u == v) return u;
+
+    for (int i = LOG - 1; i >= 0; i--) {
+        if (parent[u][i] != parent[v][i]) {
+            u = parent[u][i];
+            v = parent[v][i];
+        }
     }
 
-    return u;
+    return parent[u][0];
 }
 
 int main() {
@@ -50,6 +66,7 @@ int main() {
     }
 
     dfs(1, 0);
+    build();
 
     cin >> M;
 
