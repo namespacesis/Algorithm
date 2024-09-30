@@ -22,16 +22,16 @@ void dfs(int x, int d, int l) {
     for (pair<int, int> y : adj[x]) {
         if (check[y.first]) continue;
         parent[y.first][0] = x;
-        dfs(y.first, d + 1, y.second);
+        dfs(y.first, d + 1, l + y.second);
     }
 }
 
 void build() {
     for (int i = 1; i < LOG; i++) {
-		for (int j = 1; j <= N; j++) {
-			parent[j][i] = parent[parent[j][i - 1]][i - 1];
-		}
-	}
+        for (int j = 1; j <= N; j++) {
+            parent[j][i] = parent[parent[j][i - 1]][i - 1];
+        }
+    }
 }
 
 int lca(int u, int v) {
@@ -55,16 +55,9 @@ int lca(int u, int v) {
     return parent[u][0];
 }
 
-int findDist(int s, int e) {
-    int d = 0;
-
-    while (s != e) {
-        int p = parent[s][0];
-        d += dist[s];
-        s = p;
-    }
-
-    return d;
+int findDist(int u, int v) {
+    int ca = lca(u, v);
+    return dist[u] + dist[v] - 2 * dist[ca];
 }
 
 int main() {
@@ -79,7 +72,7 @@ int main() {
         adj[v].push_back({ u, d });
     }
 
-    dfs(1, 0, -1);
+    dfs(1, 0, 0);
     build();
 
     cin >> M;
@@ -88,10 +81,7 @@ int main() {
         int u, v;
         cin >> u >> v;
 
-        int ca = lca(u, v);
-        int res1 = findDist(u, ca);
-        int res2 = findDist(v, ca);
-        cout << res1 + res2 << "\n";
+        cout << findDist(u, v) << "\n";
     }
 
     return 0;
