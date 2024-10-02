@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <algorithm>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
 
@@ -7,15 +8,11 @@ using namespace std;
 
 struct Chess {
     int x, y, cnt, next, type;
-
-    bool operator<(const Chess& c) const {
-        return cnt > c.cnt;
-    }
 };
 
 int N;
 int arr[10][10];
-bool visited[10][10][102][3];
+bool visited[10][10][101][3];
 int kignhtDx[8] = {1, 2, 2, 1, -1, -2, -2, -1};
 int kignhtDy[8] = {2, 1, -1, -2, -2, -1, 1, 2};
 int bishopDx[4] = {1, 1, -1, -1};
@@ -25,21 +22,23 @@ int rookDy[4] = {0, 1, 0, -1};
 const int KIGHT = 0, BISHOP = 1, ROOK = 2;
 
 int bfs(int x, int y) {
-    priority_queue<Chess> pq;
-    pq.push({x, y, 0, 2, KIGHT});
-    pq.push({x, y, 0, 2, BISHOP});
-    pq.push({x, y, 0, 2, ROOK});
+    queue<Chess> q;
+    q.push({x, y, 0, 2, KIGHT});
+    q.push({x, y, 0, 2, BISHOP});
+    q.push({x, y, 0, 2, ROOK});
 
     visited[x][y][2][KIGHT] = true;
     visited[x][y][2][BISHOP] = true;
     visited[x][y][2][ROOK] = true;
 
-    while (!pq.empty()) {
-        Chess cur = pq.top();
-        pq.pop();
+    int res = 1e9;
+
+    while (!q.empty()) {
+        Chess cur = q.front();
+        q.pop();
 
         if (cur.next == N * N + 1) {
-            return cur.cnt;
+            res = min(res, cur.cnt);
         }
 
         for (int i = 0; i < 3; i++) {
@@ -48,7 +47,7 @@ int bfs(int x, int y) {
             if (visited[cur.x][cur.y][cur.next][i]) continue;
 
             visited[cur.x][cur.y][cur.next][i] = true;
-            pq.push({ cur.x, cur.y, cur.cnt + 1, cur.next, i });
+            q.push({ cur.x, cur.y, cur.cnt + 1, cur.next, i });
         }
 
         if (cur.type == KIGHT) {
@@ -62,10 +61,10 @@ int bfs(int x, int y) {
                 visited[nx][ny][cur.next][KIGHT] = true;
 
                 if (arr[nx][ny] == cur.next) {
-                    pq.push({ nx, ny, cur.cnt + 1, cur.next + 1, KIGHT });
+                    q.push({ nx, ny, cur.cnt + 1, cur.next + 1, KIGHT });
                 }
                 else {
-					pq.push({ nx, ny, cur.cnt + 1, cur.next, KIGHT });
+					q.push({ nx, ny, cur.cnt + 1, cur.next, KIGHT });
                 }
             }
         }
@@ -81,11 +80,11 @@ int bfs(int x, int y) {
                     visited[nx][ny][cur.next][BISHOP] = true;
 
 					if (arr[nx][ny] == cur.next) {
-						pq.push({ nx, ny, cur.cnt + 1, cur.next + 1, BISHOP });
+						q.push({ nx, ny, cur.cnt + 1, cur.next + 1, BISHOP });
 						break;
 					}
 					else {
-						pq.push({ nx, ny, cur.cnt + 1, cur.next, BISHOP });
+						q.push({ nx, ny, cur.cnt + 1, cur.next, BISHOP });
 					}
 				}
 			}
@@ -102,16 +101,18 @@ int bfs(int x, int y) {
                     visited[nx][ny][cur.next][ROOK] = true;
 
 					if (arr[nx][ny] == cur.next) {
-						pq.push({ nx, ny, cur.cnt + 1, cur.next + 1, ROOK });
+						q.push({ nx, ny, cur.cnt + 1, cur.next + 1, ROOK });
 						break;
 					}
 					else {
-						pq.push({ nx, ny, cur.cnt + 1, cur.next, ROOK });
+						q.push({ nx, ny, cur.cnt + 1, cur.next, ROOK });
 					}
 				}
 			}
 		}
     }
+
+    return res;
 }
 
 int main() {
