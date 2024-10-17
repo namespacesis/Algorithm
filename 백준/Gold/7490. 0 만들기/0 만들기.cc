@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr);
 
@@ -65,8 +64,6 @@ int main() {
         dfs(2, "1");
     }
 
-    //sort(res.begin(), res.end());
-
     int len = res[0].size();
 
     for (int i = 0; i < res.size(); i++) {
@@ -76,4 +73,6 @@ int main() {
         }
 		cout << res[i] << "\n";
 	}
+
+    return 0;
 }
