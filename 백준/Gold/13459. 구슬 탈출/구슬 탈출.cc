@@ -18,12 +18,14 @@ int bx, by;
 int rx, ry;
 int dx[4] = { 1, -1, 0, 0 };
 int dy[4] = { 0, 0, 1, -1 };
+bool visited[10][10][10][10];
 
 int bfs() {
     queue<Node> q;
     for (int i = 0; i < 4; i++) {
         q.push({ bx, by, rx, ry, 0, i });
     }
+    visited[bx][by][rx][ry] = true;
 
     while (!q.empty()) {
         Node cur = q.front();
@@ -93,8 +95,11 @@ int bfs() {
 
         for (int i = 0; i < 4; i++) {
             if (cur.dir == i) continue;
-            q.push({ nbx, nby, nrx, nry, cur.cnt + 1, i });
+            if (!visited[nbx][nby][nrx][nry]) {
+                q.push({ nbx, nby, nrx, nry, cur.cnt + 1, i });
+            }
         }
+        visited[nbx][nby][nrx][nry] = true;
     }
 
     return 0;
