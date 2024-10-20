@@ -92,6 +92,7 @@ int bfs() {
         else if (nbx == -1) continue;
 
         for (int i = 0; i < 4; i++) {
+            if (cur.dir == i) continue;
             q.push({ nbx, nby, nrx, nry, cur.cnt + 1, i });
         }
     }
