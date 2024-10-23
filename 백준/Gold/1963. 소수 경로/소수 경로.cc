@@ -11,7 +11,7 @@ int T;
 int N, M;
 bool visited[10000];
 
-static bool isPrime(int n) {
+bool isPrime(int n) {
     if (n < 2) return false;
     for (int i = 2; i * i <= n; i++) {
         if (n % i == 0) return false;
@@ -19,7 +19,7 @@ static bool isPrime(int n) {
     return true;
 }
 
-static int bfs() {
+int bfs() {
     queue<pair<int, int>> q;
     q.push({ N, 0 });
     visited[N] = true;
