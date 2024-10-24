@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <queue>
+#include <unordered_map>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr);
 
@@ -9,7 +10,7 @@ using namespace std;
 int N, K;
 int M;
 int res = -1;
-bool visited[1000001][11];
+unordered_map<string, bool> visited;
 
 void bfs() {
     queue<pair<int, int>> q;
@@ -19,8 +20,8 @@ void bfs() {
             string temp = s;
             if (i == 0 && temp[j] == '0') continue;
             swap(temp[i], temp[j]);
-            if (visited[stoi(temp)][1]) continue;
-            visited[stoi(temp)][1] = true;
+            if (visited[temp + '1']) continue;
+            visited[temp + '1'] = true;
             q.push({ stoi(temp), 1 });
         }
     }
@@ -41,10 +42,9 @@ void bfs() {
 				string next = temp;
                 if (i == 0 && next[j] == '0') continue;
 				swap(next[i], next[j]);
-				if (!visited[stoi(next)][cnt + 1]) {
-					visited[stoi(next)][cnt + 1] = true;
-					q.push({ stoi(next), cnt + 1 });
-				}
+                if (visited[next + to_string(cnt + 1)]) continue;
+                visited[next + to_string(cnt + 1)] = true;
+				q.push({ stoi(next), cnt + 1 });
 			}
 		}
     }
