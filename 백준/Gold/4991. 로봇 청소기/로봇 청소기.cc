@@ -1,6 +1,7 @@
 #include <iostream>
 #include <queue>
 #include <cstring>
+#include <unordered_map>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr);
 
@@ -20,7 +21,7 @@ int dx[4] = { 1, -1, 0, 0 };
 int dy[4] = { 0, 0, 1, -1 };
 int sr, sc;
 int cnt = 0;
-pair<int, int> dust[10];
+unordered_map<int, int> dust;
 
 int bfs() {
     memset(visited, 0x3f, sizeof(visited));
@@ -45,12 +46,10 @@ int bfs() {
             if (arr[nx][ny] != 'x') {
                 int next_bit = cur.bit;
 
-                for (int j = 0; j < cnt; j++) {
-                    if (nx == dust[j].first && ny == dust[j].second) {
-                        if (!(cur.bit & (1 << j))) {
-                            next_bit |= (1 << j);
-                        }
-                        break;
+                int hash = nx * 100 + ny;
+                if (arr[nx][ny] == '*') {
+                    if (!(cur.bit & (1 << dust[hash]))) {
+                        next_bit |= (1 << dust[hash]);
                     }
                 }
 
@@ -72,6 +71,7 @@ int main() {
         cin >> w >> h;
         if (w == 0 && h == 0) break;
         cnt = 0;
+        dust.clear();
 
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
@@ -81,7 +81,8 @@ int main() {
                     sc = j;
                 }
                 if (arr[i][j] == '*') {
-                    dust[cnt] = { i, j };
+                    int hash = i * 100 + j;
+                    dust[hash] = cnt;
                     cnt++;
                 }
             }
