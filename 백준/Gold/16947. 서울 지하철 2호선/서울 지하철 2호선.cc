@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <cstring>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr);
 
@@ -12,35 +11,14 @@ vector<int> arr[3000];
 bool visited[3000];
 int parent[3000];
 bool cycle[3000];
-
-int bfs(int node) {
-    queue<pair<int, int>> q;
-    q.push({node, 0});
-    visited[node] = true;
-
-    while (!q.empty()) {
-		int cur = q.front().first;
-		int dist = q.front().second;
-		q.pop();
-
-        if (cycle[cur]) return dist;
-
-		for (auto next : arr[cur]) {
-			if (visited[next]) continue;
-			visited[next] = true;
-			q.push({next, dist + 1});
-		}
-	}
-}
+int dist[3000];
 
 bool dfs(int node) {
     visited[node] = true;
     for (auto next : arr[node]) {
         if (!visited[next]) {
             parent[next] = node;
-            if (dfs(next)) {
-				return true;
-			}
+            if (dfs(next)) return true;
         }
         else if (next != parent[node]) {
             int cur = node;
@@ -54,6 +32,32 @@ bool dfs(int node) {
     }
     visited[node] = false;
     return false;
+}
+
+void find_cycle_distances() {
+    queue<int> q;
+
+    for (int i = 0; i < N; i++) {
+        if (cycle[i]) {
+            q.push(i);
+            dist[i] = 0;
+        }
+        else {
+            dist[i] = -1;
+        }
+    }
+
+    while (!q.empty()) {
+        int cur = q.front();
+        q.pop();
+
+        for (auto next : arr[cur]) {
+            if (dist[next] == -1) {
+                dist[next] = dist[cur] + 1;
+                q.push(next);
+            }
+        }
+    }
 }
 
 int main() {
@@ -73,10 +77,10 @@ int main() {
         if (dfs(i)) break;
     }
 
+    find_cycle_distances();
+
     for (int i = 0; i < N; i++) {
-        memset(visited, false, sizeof(visited));
-        int ret = bfs(i);
-        cout << ret << " ";
+        cout << dist[i] << " ";
     }
 
     return 0;
