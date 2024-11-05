@@ -15,6 +15,7 @@ int N, K, M;
 vector<int> arr[100001];
 bool visited[100001];
 vector<int> hyperTube[1000];
+bool visited2[1000];
 
 int bfs() {
     queue<Node> q;
@@ -31,6 +32,8 @@ int bfs() {
 
         for (int i = 0; i < arr[cur.x].size(); i++) {
             int tube = arr[cur.x][i];
+            if (visited2[tube]) continue;
+            visited2[tube] = true;
             for (int j = 0; j < hyperTube[tube].size(); j++) {
                 int next = hyperTube[tube][j];
                 if (!visited[next]) {
