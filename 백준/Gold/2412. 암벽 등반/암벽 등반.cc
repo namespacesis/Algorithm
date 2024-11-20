@@ -12,25 +12,30 @@ struct Node {
 };
 
 int N, T;
-unordered_map<ll, bool> um;
-unordered_map<ll, bool> visited;
+unordered_map<ll, int> um;
+bool visited[50001];
 
 int main() {
     FastIO;
 
     cin >> N >> T;
+    
+    int idx = 1;
 
     for (int i = 0; i < N; i++) {
         int a, b;
         cin >> a >> b;
 
         ll hash = (ll)a * 1000000 + b;
-        um[hash] = true;
+        um[hash] = idx;
+        idx++;
     }
 
     queue<Node> q;
     q.push({0, 0, 0});
-    visited[0] = false;
+    if (um[0]) {
+        visited[um[0]] = true;
+    }
 
     while (!q.empty()) {
         Node cur = q.front();
@@ -52,10 +57,14 @@ int main() {
 
                 ll hash = (ll)nx * 1000000 + ny;
 
-                if (um[hash] && !visited[hash]) {
-                    visited[hash] = true;
-                    q.push({ nx, ny, cur.cnt + 1 });
-                }
+                if (!um[hash]) continue;
+
+                int idx = um[hash];
+
+                if (visited[idx]) continue;
+
+                visited[idx] = true;
+                q.push({ nx, ny, cur.cnt + 1 });
             }
         }
     }
