@@ -44,6 +44,10 @@ int main() {
         Virus cur = q.front();
         q.pop();
 
+        if (arr[cur.x][cur.y] == 1) res1++;
+        else if (arr[cur.x][cur.y] == 2) res2++;
+        else if (arr[cur.x][cur.y] == 3) res3++;
+
         if (arr[cur.x][cur.y] == 3) continue;
 
         for (int i = 0; i < 4; i++) {
@@ -62,14 +66,6 @@ int main() {
                     arr[nx][ny] = 3;
                 }
             }
-        }
-    }
-
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < M; j++) {
-            if (arr[i][j] == 1) res1++;
-            else if (arr[i][j] == 2) res2++;
-			else if (arr[i][j] == 3) res3++;
         }
     }
 
