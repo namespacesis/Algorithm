@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <algorithm>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr);
 
@@ -29,32 +30,37 @@ void bfs() {
         Node cur = q.front();
         q.pop();
 
-        if (arr[cur.x][cur.y] == 'E') {
-            res = min(res, cur.distance);
-            return;
-        }
-
-        if (cur.guard >= 0) cur.guard--;
-        else cur.health--;
-
-        if (cur.health <= 0) continue;
-
         for (int i = 0; i < 4; i++) {
             int nx = cur.x + dx[i];
             int ny = cur.y + dy[i];
 
             if (nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
 
+            if (arr[nx][ny] == 'E') {
+                res = min(res, cur.distance + 1);
+				return;
+            }
+
+            int nextHealth = cur.health;
+            int nextGuard = cur.guard;
+
             if (arr[nx][ny] == 'U') {
-                if (visited[nx][ny] >= (D + cur.health)) continue;
-                visited[nx][ny] = D + cur.health;
-                q.push({ nx, ny, cur.health, cur.distance + 1, D });
+                nextGuard = D;
+            }
+
+            if (nextGuard > 0) {
+                nextGuard--;
             }
             else {
-                if (visited[nx][ny] >= (cur.guard + cur.health)) continue;
-                visited[nx][ny] = cur.guard + cur.health;
-                q.push({ nx, ny, cur.health, cur.distance + 1, cur.guard });
+                nextHealth--;
             }
+
+            if (nextHealth == 0) continue;
+
+            if (visited[nx][ny] >= (nextGuard + nextHealth)) continue;
+
+            visited[nx][ny] = nextGuard + nextHealth;
+            q.push({ nx, ny, nextHealth, cur.distance + 1, nextGuard });
         }
     }
     res = -1;
