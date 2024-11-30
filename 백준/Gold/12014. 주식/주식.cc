@@ -7,27 +7,7 @@ using namespace std;
 
 int T;
 int N, K;
-int arr[10000];
 vector<int> res;
-
-int binarySearch(int n) {
-    int left = 0;
-    int right = res.size() - 1;
-    int mid;
-
-    while (left < right) {
-        mid = (left + right) / 2;
-
-        if (res[mid] >= n) {
-            right = mid;
-        }
-        else {
-            left = mid + 1;
-        }
-    }
-
-    return right;
-}
 
 int main() {
     FastIO;
@@ -38,19 +18,17 @@ int main() {
         res.clear();
         cin >> N >> K;
 
-        for (int i = 0; i < N; i++) {
-            cin >> arr[i];
-        }
-
-        res.push_back(arr[0]);
+        int n;
+        cin >> n;
+        res.push_back(n);
 
         for (int i = 1; i < N; i++) {
-            if (arr[i] > res.back()) {
-                res.push_back(arr[i]);
+            cin >> n;
+            if (n > res.back()) {
+                res.push_back(n);
             }
             else {
-                int idx = binarySearch(arr[i]);
-                res[idx] = arr[i];
+                *lower_bound(res.begin(), res.end(), n) = n;
             }
         }
 
