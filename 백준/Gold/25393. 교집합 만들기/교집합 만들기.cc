@@ -1,6 +1,4 @@
 #include <iostream>
-#include <string>
-#include <unordered_map>
 #include <map>
 #include <algorithm>
 
@@ -11,8 +9,8 @@ using namespace std;
 
 int N;
 int Q;
-unordered_map<int, int> l2r;
-unordered_map<int, int> r2l;
+int l2r[1000001];
+int r2l[1000001];
 map<pair<int, int>, bool> um;
 
 int main() {
@@ -20,17 +18,14 @@ int main() {
 
     cin >> N;
 
+    fill(r2l, r2l + 1000001, 1e9);
+
     for (int i = 0; i < N; i++) {
         int l, r;
         cin >> l >> r;
 
         l2r[l] = max(r, l2r[l]);
-        if (r2l.find(r) == r2l.end()) {
-            r2l[r] = l;
-        }
-        else {
-            r2l[r] = min(r2l[r], l);
-        }
+        r2l[r] = min(l, r2l[r]);
         
         um[{l, r}] = true;
     }
@@ -45,11 +40,6 @@ int main() {
             cout << 1 << endl;
             continue;
         }
-
-        if (l2r.find(l) == l2r.end() || r2l.find(r) == r2l.end()) {
-			cout << -1 << endl;
-			continue;
-		}
 
         if (l2r[l] >= r && r2l[r] <= l) {
             cout << 2 << endl;
