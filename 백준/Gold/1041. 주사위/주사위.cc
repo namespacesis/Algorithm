@@ -14,39 +14,18 @@ int main() {
 
     cin >> N;
 
-    int min1 = 1000000;
-
     for (int i = 0; i < 6; i++) {
         cin >> arr[i];
-        min1 = min(min1, arr[i]);
     }
 
-    int min2 = 1000000;
+    int m1 = min(arr[0], arr[5]);
+    int m2 = min(arr[1], arr[4]);
+    int m3 = min(arr[2], arr[3]);
 
-    min2 = min(min2, arr[0] + arr[1]);
-    min2 = min(min2, arr[0] + arr[2]);
-    min2 = min(min2, arr[0] + arr[3]);
-    min2 = min(min2, arr[0] + arr[4]);
-    min2 = min(min2, arr[1] + arr[2]);
-    min2 = min(min2, arr[1] + arr[3]);
-    min2 = min(min2, arr[1] + arr[5]);
-    min2 = min(min2, arr[2] + arr[4]);
-    min2 = min(min2, arr[2] + arr[5]);
-    min2 = min(min2, arr[3] + arr[4]);
-    min2 = min(min2, arr[3] + arr[5]);
-    min2 = min(min2, arr[4] + arr[5]);
-
-    int min3 = 1000000;
-
-    min3 = min(min3, arr[0] + arr[1] + arr[2]);
-    min3 = min(min3, arr[0] + arr[1] + arr[3]);
-    min3 = min(min3, arr[0] + arr[2] + arr[4]);
-    min3 = min(min3, arr[0] + arr[3] + arr[4]);
-    min3 = min(min3, arr[1] + arr[2] + arr[5]);
-    min3 = min(min3, arr[1] + arr[3] + arr[5]);
-    min3 = min(min3, arr[2] + arr[4] + arr[5]);
-    min3 = min(min3, arr[3] + arr[4] + arr[5]);
-
+    int min1 = min(m1, min(m2, m3));
+    int min2 = min(m1 + m2, min(m1 + m3, m2 + m3));
+    int min3 = m1 + m2 + m3;
+    
     long long res = 0;
 
     if (N == 1) {
