@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <set>
 #include <algorithm>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr);
@@ -11,6 +12,7 @@ using namespace std;
 int T;
 int N;
 map<int, vector<int>> m;
+set<vector<int>> s;
 
 int main() {
     FastIO;
@@ -19,6 +21,7 @@ int main() {
 
     while (T--) {
         m.clear();
+        s.clear();
         cin >> N;
 
         for (int i = 0; i < N; i++) {
@@ -30,24 +33,11 @@ int main() {
 
         for (auto& i : m) {
             sort(i.second.begin(), i.second.end());
-        }
-
-        bool flag = false;
-
-        for (auto& i : m) {
-            if (flag) break;
-            for (auto& j : m) {
-                if (i.first == j.first) continue;
-
-                if (i.second != j.second) {
-                    flag = true;
-                    break;
-                }
-            }
+            s.insert(i.second);
         }
 
         string res = "";
-        flag ? res = "NOT BALANCED" : res = "BALANCED";
+        s.size() == 1 ? res = "BALANCED" : res = "NOT BALANCED";
 
         cout << res << endl;
     }
