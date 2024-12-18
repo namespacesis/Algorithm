@@ -9,7 +9,7 @@ using namespace std;
 int N, X;
 int arr[100000];
 
-bool check(int mid) {
+static bool check(int mid) {
     priority_queue<int, vector<int>, greater<int>> pq;
 
     for (int i = 0; i < mid; i++) {
