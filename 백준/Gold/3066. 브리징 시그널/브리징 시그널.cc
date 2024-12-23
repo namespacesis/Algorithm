@@ -10,7 +10,6 @@ using namespace std;
 
 int T;
 int N;
-int arr[40001];
 
 int main() {
     FastIO;
@@ -19,23 +18,23 @@ int main() {
 
     while (T--) {
         cin >> N;
-        for (int i = 1; i <= N; i++) {
-            cin >> arr[i];
-        }
+        vector<int> arr;
         
-        vector<int> cnt;
-        cnt.push_back(arr[1]);
+        int n;
+        cin >> n;
+        arr.push_back(n);
 
         for (int i = 2; i <= N; i++) {
-            if (cnt.back() < arr[i]) {
-				cnt.push_back(arr[i]);
+            cin >> n;
+            if (arr.back() < n) {
+				arr.push_back(n);
             }
             else {
-                *lower_bound(cnt.begin(), cnt.end(), arr[i]) = arr[i];
+                *lower_bound(arr.begin(), arr.end(), n) = n;
             }
         }
 
-        int res = cnt.size();
+        int res = arr.size();
 
         cout << res << endl;
     }
