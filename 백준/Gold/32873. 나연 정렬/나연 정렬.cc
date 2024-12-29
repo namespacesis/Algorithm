@@ -16,7 +16,8 @@ int main() {
     cin >> N;
 
     vector<int> v;
-    
+    v.reserve(N);
+
     int a;
     cin >> a;
     v.push_back(a);
