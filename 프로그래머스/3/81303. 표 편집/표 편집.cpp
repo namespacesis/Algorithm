@@ -12,14 +12,18 @@ struct Node {
 
 string solution(int n, int k, vector<string> cmd) {
     // 이중 연결 리스트 생성
-    vector<Node> nodes(n);
+    vector<Node*> nodes(n);
     for (int i = 0; i < n; i++) {
-        nodes[i].index = i;
-        nodes[i].prev = (i > 0) ? &nodes[i - 1] : nullptr;
-        nodes[i].next = (i < n - 1) ? &nodes[i + 1] : nullptr;
+        nodes[i] = new Node();
+        nodes[i]->index = i;
+    }
+    
+    for(int i = 0; i < n; i++){
+        if (i > 0) nodes[i]->prev = nodes[i - 1];
+        if (i < n - 1) nodes[i]->next = nodes[i + 1];
     }
 
-    Node* cur = &nodes[k];  // 현재 선택된 노드
+    Node* cur = nodes[k];  // 현재 선택된 노드
     stack<Node*> removed;   // 삭제된 노드 기록
 
     for (const string& c : cmd) {
