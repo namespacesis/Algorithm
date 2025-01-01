@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 #include <queue>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr);
@@ -13,15 +12,9 @@ char arr[100][100];
 bool visited[100][100];
 int dx[4] = { 1, -1, 0, 0 };
 int dy[4] = { 0, 0, 1, -1 };
-vector<pair<int, int>> v;
+queue<pair<int, int>> q;
 
 void bfs() {
-    queue<pair<int, int>> q;
-    for (auto& i : v) {
-		q.push({ i.first, i.second });
-		visited[i.first][i.second] = true;
-	}
-
     while (!q.empty()) {
         int x = q.front().first;
         int y = q.front().second;
@@ -47,14 +40,10 @@ void bfs() {
                 }
 
                 if (visited[nx][ny]) continue;
+            }
 
-                visited[nx][ny] = true;
-                q.push({ nx, ny });
-            }
-            else {
-                visited[nx][ny] = true;
-                q.push({ nx, ny });
-            }
+            visited[nx][ny] = true;
+            q.push({ nx, ny });
         }
     }
 }
@@ -68,7 +57,8 @@ int main() {
         for (int j = 0; j < M; j++) {
             cin >> arr[i][j];
             if (arr[i][j] == 'W') {
-                v.push_back({ i, j });
+                q.push({ i, j });
+                visited[i][j] = true;
             }
         }
     }
