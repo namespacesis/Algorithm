@@ -1,5 +1,6 @@
 #include <iostream>
-#include <queue>
+#include <deque>
+#include <cstring>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr)
 #define endl '\n'
@@ -10,29 +11,25 @@ using namespace std;
 struct Node {
     int x, y;
     int cnt;
-
-    bool operator<(const Node& n) const {
-        return cnt > n.cnt;
-    }
 };
 
 int N, M;
 int arr[2002][2002];
-bool visited[2002][2002];
-int dx[8] = {1, 1, 1, 0, 0, -1, -1, -1};
-int dy[8] = {1, 0, -1, 1, -1, 1, 0, -1};
+int visited[2002][2002];
+int dx[8] = { 1, 1, 1, 0, 0, -1, -1, -1 };
+int dy[8] = { 1, 0, -1, 1, -1, 1, 0, -1 };
 
 int dijkstra() {
-    priority_queue<Node> pq;
-    pq.push({ N + 1, 0, 0 });
-    visited[N + 1][0] = true;
+    deque<Node> dq;
+    dq.push_back({ N + 1, 0, 0 });
+    visited[N + 1][0] = 0;
 
-    while (!pq.empty()) {
-        Node cur = pq.top();
-        pq.pop();
+    while (!dq.empty()) {
+        Node cur = dq.front();
+        dq.pop_front();
 
         if (cur.x == 0 && cur.y == M + 1) {
-            return cur.cnt;
+            break;
         }
 
         for (int i = 0; i < 8; i++) {
@@ -44,14 +41,21 @@ int dijkstra() {
             if (nx == 1 && ny == 1) continue;
             if (nx == N && ny == M) continue;
 
-            if (visited[nx][ny]) continue;
-
             int ncnt = cur.cnt + !(arr[nx][ny]);
 
-            visited[nx][ny] = true;
-            pq.push({ nx, ny, ncnt });
+            if (visited[nx][ny] <= ncnt) continue;
+
+            if (arr[nx][ny] == 1) {
+				visited[nx][ny] = ncnt;
+				dq.push_front({ nx, ny, ncnt });
+			} else {
+				visited[nx][ny] = ncnt;
+				dq.push_back({ nx, ny, ncnt });
+			}
         }
     }
+
+    return visited[0][M + 1];
 }
 
 int main() {
@@ -64,6 +68,8 @@ int main() {
             cin >> arr[i][j];
         }
     }
+
+    memset(visited, 0x3f, sizeof(visited));
 
     for (int i = 2; i <= N + 1; i++) arr[i][0] = 1;
     for (int i = 1; i <= M - 1; i++) arr[N + 1][i] = 1;
