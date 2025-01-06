@@ -79,9 +79,6 @@ void zeroOneBfs() {
         int y = cur.y;
         int t = cur.t;
 
-        // 이미 더 좋은(회전수 적은) 경로가 dp[x][y]에 있으면 패스
-        if(dp[x][y] < t) continue;
-
         // 목표 도착점: (N, M)에 도달하면 멈춰도 됨
         if(x == N && y == M) break;
 
