@@ -1,6 +1,5 @@
 #include <iostream>
 #include <queue>
-#include <cstring>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr)
 #define endl '\n'
@@ -26,11 +25,9 @@ int main() {
     cin >> sr >> sc >> er >> ec;
     sr--, sc--, er--, ec--;
 
-    memset(visited, 0x3f, sizeof(visited));
-
     queue<Node> q;
     q.push({ sr, sc, 0 });
-    visited[sr][sc] = 0;
+    visited[sr][sc] = true;
 
     while (!q.empty()) {
         Node cur = q.front();
@@ -46,9 +43,9 @@ int main() {
 			int ny = cur.y + dy[i];
 
 			if (nx < 0 || nx >= 8 || ny < 0 || ny >= 8) continue;
-			if (visited[nx][ny] < cur.cnt + 1) continue;
+			if (visited[nx][ny]) continue;
 
-			visited[nx][ny] = cur.cnt + 1;
+			visited[nx][ny] = true;
 			q.push({ nx, ny, cur.cnt + 1 });
 		}
     }
