@@ -10,7 +10,6 @@ using namespace std;
 
 int L, C;
 char arr[15];
-bool visited[15];
 vector<string> res;
 
 void dfs(int cnt, string str, int idx) {
