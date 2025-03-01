@@ -1,6 +1,5 @@
 #include <iostream>
 #include <algorithm>
-#include <vector>
 
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr)
 #define endl '\n'
@@ -10,7 +9,6 @@ using namespace std;
 
 int L, C;
 char arr[15];
-vector<string> res;
 
 void dfs(int cnt, string str, int idx) {
     if (cnt == L) {
@@ -24,7 +22,7 @@ void dfs(int cnt, string str, int idx) {
 		}
 
 		if (a >= 1 && b >= 2) {
-			res.push_back(str);
+			cout << str << endl;
 		}
 		return;
 	}
@@ -46,10 +44,6 @@ int main() {
     sort(arr, arr + C);
 
     dfs(0, "", 0);
-
-	for (auto s : res) {
-		cout << s << endl;
-	}
 
 	return 0;
 }
