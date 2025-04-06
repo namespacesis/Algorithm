@@ -8,6 +8,37 @@ using namespace std;
 int N, L;
 int arr[100][100];
 
+bool canPlaceSlope(const int* line) {
+    int cnt = 1;
+
+    for (int i = 1; i < N; i++) {
+        int diff = line[i] - line[i - 1];
+
+        if (diff == 0) {
+            cnt++;
+        }
+        else if (diff == 1) {
+            if (cnt >= L) {
+                cnt = 1;
+            }
+            else {
+                return false;
+            }
+        }
+        else if (diff == -1) {
+            for (int j = i; j < i + L; j++) {
+                if (j >= N || line[j] != line[i]) return false;
+            }
+            i += L - 1;
+            cnt = 0;
+        }
+        else {
+            return false;
+        }
+    }
+    return true;
+}
+
 int main() {
     FastIO;
 
@@ -22,97 +53,17 @@ int main() {
     int res = 0;
 
     for (int i = 0; i < N; i++) {
-        int v = arr[i][0];
-
-        int cnt = 1;
-
-        for (int j = 1; j < N; j++) {
-            int diff = arr[i][j] - v;
-
-            if (diff == 0) {
-                cnt++;
-            }
-            else if (diff == 1) {
-                if (cnt >= L) {
-                    cnt = 1;
-                    v = arr[i][j];
-                }
-                else {
-                    cnt = -1;
-                    break;
-                }
-            }
-            else if (diff == -1) {
-                for (int k = 0; k < L; k++) {
-                    if (j + k >= N || arr[i][j + k] != arr[i][j]) {
-                        cnt = -1;
-                        break;
-                    }
-                }
-
-                if (cnt == -1) {
-					break;
-				}
-                j += L - 1;
-                v = arr[i][j];
-                cnt = 0;
-            }
-            else {
-                cnt = -1;
-                break;
-            }
-        }
-
-        if (cnt != -1) {
-            res++;
-        }
+        if (canPlaceSlope(arr[i])) res++;
     }
 
     for (int i = 0; i < N; i++) {
-        int v = arr[0][i];
+        int col[100]{};
 
-        int cnt = 1;
-
-        for (int j = 1; j < N; j++) {
-            int diff = arr[j][i] - v;
-
-            if (diff == 0) {
-                cnt++;
-            }
-            else if (diff == 1) {
-                if (cnt >= L) {
-                    cnt = 1;
-                    v = arr[j][i];
-                }
-                else {
-                    cnt = -1;
-                    break;
-                }
-            }
-            else if (diff == -1) {
-                for (int k = 0; k < L; k++) {
-                    if (j + k >= N || arr[j + k][i] != arr[j][i]) {
-                        cnt = -1;
-                        break;
-                    }
-                }
-
-                if (cnt == -1) {
-                    break;
-                }
-                j += L - 1;
-                v = arr[j][i];
-                cnt = 0;
-            }
-            else {
-                cnt = -1;
-                break;
-            }
+        for (int j = 0; j < N; j++) {
+            col[j] = arr[j][i];
         }
 
-        if (cnt != -1) {
-            res++;
-        }
+        if (canPlaceSlope(col)) res++;
     }
 
     cout << res << endl;
