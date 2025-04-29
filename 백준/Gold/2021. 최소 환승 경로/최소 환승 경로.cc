@@ -1,74 +1,62 @@
 #include <iostream>
-#include <vector>
 #include <queue>
-
+#include <vector>
+#include <algorithm>
+#define MAX 200001
 using namespace std;
 
-#define FastIO ios::sync_with_stdio(false), cin.tie(nullptr)
-#define endl '\n'
-
-int N, L;
-vector<int> stations[100001];
-vector<int> routes[100001];
-bool visited[100001];
-int s, e;
+int n, m, start, e;
+int visited[MAX];
+vector<int> graph[MAX];
 
 int bfs() {
-    int ret = 1e9;
+	queue<pair<int, int>> q;
+	q.push({ -1, start });
 
-    queue<pair<int, int>> q;
+	while (!q.empty()) {
+		int cur = q.front().second;
+		int dis = q.front().first;
+		q.pop();
+		for (int i = 0; i < graph[cur].size(); i++) {
+			int next = graph[cur][i];
+			if (visited[next] > -1)
+				continue;
+			if (next > 100000) {
+				q.push({ dis + 1,next });
+				visited[next] = dis + 1;
+			}
+			else if (next == e) {
+				return dis;
+			}
+			else {
+				q.push({ dis,next });
+				visited[next] = dis;
+			}
 
-    for (auto station : stations[s]) {
-        q.push({ station, 0 });
-        visited[station] = true;
-    }
-
-    while (!q.empty()) {
-        int cur = q.front().first;
-        int cnt = q.front().second;
-        q.pop();
-
-        for (auto next : routes[cur]) {
-            if (next == e) {
-                ret = min(ret, cnt);
-                break;
-            }
-            else {
-                for (auto station : stations[next]) {
-                    if (visited[station]) continue;
-                    visited[station] = true;
-                    q.push({ station, cnt + 1 });
-                }
-            }
-        }
-    }
-
-    if (ret == 1e9) ret = -1;
-
-    return ret;
+		}
+	}
+	return -1;
 }
 
 int main() {
-    FastIO;
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
 
-    cin >> N >> L;
+	cin >> n >> m;
+	for (int i = 1; i <= m; i++) {
+		int num;
+		cin >> num;
+		while (num != -1) {
+			graph[num].push_back(i + 100000);
+			graph[i + 100000].push_back(num);
+			cin >> num;
+		}
+	}
+	cin >> start >> e;
+	fill_n(visited, MAX, -1);
 
-    int x;
+	cout << bfs();
 
-    for (int i = 1; i <= L; i++) {
-        while (true) {
-            cin >> x;
-            if (x == -1) break;
-            stations[x].push_back(i);
-            routes[i].push_back(x);
-        }
-    }
-
-    cin >> s >> e;
-
-    int res = bfs();
-
-    cout << res << endl;
-
-    return 0;
+	return 0;
 }
