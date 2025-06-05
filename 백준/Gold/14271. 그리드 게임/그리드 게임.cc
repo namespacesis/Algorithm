@@ -5,10 +5,6 @@ using namespace std;
 #define FastIO ios::sync_with_stdio(false), cin.tie(nullptr)
 #define endl '\n'
 
-struct Cell {
-    int x, y, cnt;
-};
-
 const int SIZE = 3100;
 const int OFFSET = 1550;
 bool visited[SIZE][SIZE];
@@ -20,7 +16,7 @@ int main() {
     int N, M, K;
     cin >> N >> M;
 
-    queue<Cell> q;
+    queue<pair<int, int>> q;
     int res = 0;
 
     for (int i = 0; i < N; i++) {
@@ -31,7 +27,7 @@ int main() {
                 int x = i + OFFSET;
                 int y = j + OFFSET;
                 visited[x][y] = true;
-                q.push({x, y, 0});
+                q.push({x, y});
                 res++;
             }
         }
@@ -39,18 +35,17 @@ int main() {
 
     cin >> K;
 
-    while (!q.empty()) {
-        Cell cur = q.front(); q.pop();
-        if (cur.cnt == K) continue;
-
-        for (int i = 0; i < 4; i++) {
-            int nx = cur.x + dx[i];
-            int ny = cur.y + dy[i];
-
-            if (!visited[nx][ny]) {
-                visited[nx][ny] = true;
-                q.push({nx, ny, cur.cnt + 1});
-                res++;
+    while (K--) {
+        int sz = q.size();
+        while (sz--) {
+            auto [x, y] = q.front(); q.pop();
+            for (int i = 0; i < 4; i++) {
+                int nx = x + dx[i], ny = y + dy[i];
+                if (!visited[nx][ny]) {
+                    visited[nx][ny] = true;
+                    q.push({nx, ny});
+                    res++;
+                }
             }
         }
     }
