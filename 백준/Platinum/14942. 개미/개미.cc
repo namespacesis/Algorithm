@@ -24,7 +24,6 @@ void dfs(int idx) {
 
         visited[e.first] = true;
         dfs(e.first);
-        visited[e.first] = false;
     }
 }
 
