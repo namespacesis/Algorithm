@@ -12,7 +12,7 @@ struct Info {
 
 int N;
 Info arr[1500000];
-int dp[1500001][2];
+int dp[1500001];
 
 int main() {
 	FastIO;
@@ -25,21 +25,16 @@ int main() {
         arr[i] = { t, p };
     }
 
-    Info lastDay = arr[N - 1];
-
-    if (lastDay.t == 1) {
-        dp[N - 1][1] = lastDay.p;
-    }
-
-    for (int i = N - 2; i >= 0; i--) {
+    for (int i = N - 1; i >= 0; i--) {
         Info info = arr[i];
         if (i + info.t <= N) {
-            dp[i][1] = info.p + max(dp[i + info.t][0], dp[i + info.t][1]);
+            dp[i] = max(info.p + dp[i + info.t], dp[i + 1]);
+        } else {
+            dp[i] = dp[i + 1];
         }
-        dp[i][0] = max(dp[i + 1][0], dp[i + 1][1]);
     }
 
-    int res = max(dp[0][0], dp[0][1]);
+    int res = dp[0];
 
     cout << res << endl;
 
